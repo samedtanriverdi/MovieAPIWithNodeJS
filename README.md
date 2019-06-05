@@ -1,2 +1,3 @@
 # MovieAPIWithNodeJS
-Node js ve git ögrenmek için geliştirdiğim bir proje :d 
+Movie API developed with Node.js, Express and MongoDB, Have Fun :)
+ 
