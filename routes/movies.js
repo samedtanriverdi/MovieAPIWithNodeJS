@@ -5,7 +5,20 @@ var router = express.Router();
 var Movie = require('../models/Movie');
 
 router.get('/', (req, res, next) => {
-  Movie.find({}).then(data => {
+  console.log(req.decode);
+  Movie.aggregate([
+    {
+      $lookup: {
+        from: 'directors',
+        localField: 'director_id',
+        foreignField: '_id',
+        as: 'director'
+      }
+    },
+    {
+      $unwind: '$director'
+    }
+  ]).then(data => {
     res.json(data);
   }).catch(err => {
     res.send(err);
@@ -74,14 +87,15 @@ router.delete('/:movieId', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-  const { title, year, imdb_score, category, country } = req.body;
+  const { title, year, imdb_score, category, country, director_id } = req.body;
 
   const movie = new Movie({
     title: title,
     imdb_score: imdb_score,
     country: country,
     year: year,
-    category: category
+    category: category,
+    director_id: director_id
   });
 
   movie.save().then((err, data) => {
