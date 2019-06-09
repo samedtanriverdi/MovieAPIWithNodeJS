@@ -47,17 +47,47 @@ describe('/api/movie tests', () => {
             })
         });
     })
-    describe('/Get/:directorId Movie', () => {
+    describe('/Get/:movieId Movie', () => {
         it('it should get a movie by the given id', (done) => {
             chai.request(server)
-            .get('/api/movie/' + movieId)
-            .set('x-access-token',token)
-            .end((err, res) => {
+                .get('/api/movie/' + movieId)
+                .set('x-access-token', token)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('title');
+                    res.body.should.have.property('_id').eql(movieId);
+                    done();
+                })
+        })
+    })
+    describe('/Put:movieId Movie', () => {
+        it('it should Update a movie given by id', (done) => {
+            const movie = {
+                title: "TEST 123",
+                imdb_score: "10",
+                country: "TEST",
+                year: 1998,
+                category: 'test',
+                director_id: "5cfa9a3fcb184309b4bd21d1"
+            };
+            chai.request(server).put('/api/movie/' + movieId).send(movie).set('x-access-token', token).end((err, res) => {
                 res.should.have.status(200);
-                res.body.should.have.property('title');
-                res.body.should.have.property('_id').eql(movieId);
+                res.body.should.be.a('object')
+                res.body.should.have.property('title').eql(movie.title);
+                movieId = res.body._id;
                 done();
             })
+        })
+    });
+    describe('/Delete:movieId Movie', () => {
+        it('it should delete given id', (done) => {
+            chai.request(server).delete('/api/movie/' + movieId).set('x-access-token', token)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('status').eql(1);
+                    done();
+                })
         })
     })
 });
