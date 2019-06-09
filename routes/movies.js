@@ -5,7 +5,6 @@ var router = express.Router();
 var Movie = require('../models/Movie');
 
 router.get('/', (req, res, next) => {
-  console.log(req.decode);
   Movie.aggregate([
     {
       $lookup: {
@@ -49,7 +48,7 @@ router.get('/between/:startDate/:endDate', (req, res, next) => {
 router.get('/:movieId', (req, res, next) => {
   var { movieId } = req.params;
   Movie.findById(movieId).then(data => {
-    if (!movie)
+    if (!data)
       next({ message: 'movie not found' })
 
     res.json(data);
