@@ -4,5 +4,3 @@ node_js:
 before_install:
 - npm install
 - export NODE_ENV=production
-script:
-- npm run test
